@@ -2,14 +2,17 @@ package chess.pieces;
 
 import boardgame.Board;
 import boardgame.Position;
+import chess.CheesMatch;
 import chess.ChessPiece;
 import chess.Color;
 
 public class Pawn extends ChessPiece{
 
-	public Pawn(Board board, Color color) {
+	private CheesMatch chessMatch;
+	
+	public Pawn(Board board, Color color, CheesMatch chessMatch) {
 		super(board, color);
-		// TODO Auto-generated constructor stub
+		this.chessMatch = chessMatch;
 	}
 
 	public String toString() {
@@ -43,6 +46,20 @@ public class Pawn extends ChessPiece{
 			if(getBoard().positionExists(p) && isThereOpponentPiece(p)) {
 				mat[p.getRow()][p.getColumn()] = true;
 			}
+			
+			// specialmove en passant WHITE
+			
+			if(position.getRow() == 3) {
+				Position left = new Position(position.getRow(), position.getColumn() -1);
+				Position right = new Position(position.getRow(), position.getColumn() +1);
+				
+				if(getBoard().positionExists(left) && isThereOpponentPiece(left) && getBoard().piece(left) == chessMatch.getEnPassantVulnerable()) {
+					mat[left.getRow()-1][left.getColumn()] = true;
+				}
+				if(getBoard().positionExists(right) && isThereOpponentPiece(right) && getBoard().piece(right) == chessMatch.getEnPassantVulnerable()) {
+					mat[right.getRow()-1][right.getColumn()] = true;
+				}
+			}
 		}else {
 			
 			
@@ -67,6 +84,19 @@ public class Pawn extends ChessPiece{
 				mat[p.getRow()][p.getColumn()] = true;
 				
 			}	
+			//BLACK
+			
+			if(position.getRow() == 4) {
+				Position left = new Position(position.getRow(), position.getColumn() -1);
+				Position right = new Position(position.getRow(), position.getColumn() +1);
+				
+				if(getBoard().positionExists(left) && isThereOpponentPiece(left) && getBoard().piece(left) == chessMatch.getEnPassantVulnerable()) {
+					mat[left.getRow()+1][left.getColumn()] = true;
+				}
+				if(getBoard().positionExists(right) && isThereOpponentPiece(right) && getBoard().piece(right) == chessMatch.getEnPassantVulnerable()) {
+					mat[right.getRow()+1][right.getColumn()] = true;
+				}
+			}
 		}
 		return mat;
 		
